@@ -11,9 +11,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 import java.io.InputStream
 
-// Image for labeling is taken from:
-// https://blog.usejournal.com/flutter-for-android-developers-how-to-design-activity-ui-in-flutter-4bf7b0de1e48
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,10 +18,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         labelButton.setOnClickListener { labelImage() }
+        clearButton.setOnClickListener { resultTextView.text = "" }
     }
 
     private fun labelImage() {
+        // Image for labeling is taken from:
+        // https://blog.usejournal.com/flutter-for-android-developers-how-to-design-activity-ui-in-flutter-4bf7b0de1e48
         val bitmap = getBitmapFromAsset("photo.jpeg")
+
+        // Since the image in this example is already correctly oriented,
+        // we don't have to compensate camera rotation.
 
         if (bitmap != null) {
             val image = FirebaseVisionImage.fromBitmap(bitmap)
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
                 .addOnSuccessListener { labels ->
                     var text = "Labels: "
 
+                    // Concatenate texts from all labels into one
                     for (label in labels) {
                         text += label.text + ", "
                     }
